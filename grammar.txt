@@ -1,0 +1,17 @@
+line -> assign;line2
+
+line2 -> EOF
+	| assign;line2
+	| print ID;
+
+assign -> idValue = expr
+
+expr -> term ( + term | - term ) *
+
+term -> factor ( * factor | / factor ) *
+
+factor -> NUMBER
+	 | ID
+	 | ( expr )
+
+idValue -> ID  

@@ -1,0 +1,8 @@
+x = 10 - 20;
+print x;
+y = -20;
+print y;
+banana = (20*10)+11;
+print banana;
+girassol = 20*(10+(2*20))+20;
+print girassol;

@@ -1,0 +1,132 @@
+PARSER_BEGIN(Compiler)
+import java.util.*;
+/** ID lister. */
+public class Compiler {
+
+	public static Map<String,Double> symbolTable = new HashMap<String,Double>();
+	
+	/** Main entry point. */
+	public static void main(String args[]) throws ParseException {
+	Compiler parser = new Compiler(System.in);
+	parser.line();
+	}
+
+}
+
+PARSER_END(Compiler)
+
+SKIP :
+{
+  " "
+| "\t"
+| "\n"
+| "\r"
+}
+
+TOKEN :
+{
+	< PRINT : "print">
+}
+
+TOKEN :
+{
+  < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >
+}
+
+TOKEN :
+{
+	< NUMBER : (["-"])?<DIGITS> | (["-"])?<DIGITS> "." <DIGITS> >
+}
+
+TOKEN :
+{
+	< #DIGITS : ( ["0"-"9"] )+ >
+}
+
+TOKEN :
+{
+	< EQUAL : "=" >
+   |< PLUS : "+" >
+   |< MINUS: "-" >
+   |< TIMES: "*" >
+   |< DIV: "/" >
+}
+
+TOKEN :
+{
+	< OPEN_PAR : "(">
+	|< CLS_PAR : ")">
+}
+
+
+/** Top level production. */
+void line() :
+{
+	double varValue;
+}
+{
+	 varValue = assign() ";" line2()
+}
+
+void line2() :
+{
+	double varValue;
+	Token t;
+}
+{
+	<EOF>
+   |varValue = assign() ";" line2()
+   |<PRINT> (t = <Id>)+ ";" {System.out.println(symbolTable.get(t.toString()));} line2()
+}
+
+Double assign() :
+{
+	String varName;
+	Double value;
+}
+{
+	varName = idValue() <EQUAL> value = expr()
+	{
+		symbolTable.put(varName,value);
+		return symbolTable.get(varName);
+	}
+}
+
+String idValue() :
+{
+	Token t;
+}
+{
+	(t = <Id> )+ {return t.toString();}
+}
+
+Double expr() :
+{
+	Double i;
+	Double value;
+}
+{
+	value = term() ( <PLUS> i = term() {value+=i;}
+					 | <MINUS> i = term() {value-=i;} )* {return value;}
+}
+
+Double term() :
+{
+	Double i;
+	Double value;
+}
+{
+	value = factor() ( <TIMES> i = factor() {value*=i;}
+					   | <DIV> i = factor() {value/=i;} )* {return value;}
+}
+
+Double factor() :
+{
+	Token t;
+	Double d;
+}
+{
+	 t = <NUMBER> {return Double.parseDouble(t.image);}
+	|(t = <Id>)+ {return symbolTable.get(t.toString());}
+	|<OPEN_PAR> d = expr() <CLS_PAR> {return d;}
+}
