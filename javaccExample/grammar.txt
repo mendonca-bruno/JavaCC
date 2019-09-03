@@ -1,4 +1,4 @@
-start -> (idValue expr ;)*
+start -> (idValue = expr ;)*
 idValue -> ID
 expr -> factor (+ factor
 		|- factor)*
