@@ -1,0 +1,130 @@
+PARSER_BEGIN(Compiler)
+import java.util.*;
+/** ID lister. */
+public class Compiler {
+	
+	/** Main entry point. */
+	public static void main(String args[]){
+	Compiler parser = new Compiler(System.in);
+	try{
+		SimpleNode n = parser.line();
+		n.dump("");
+	}catch (Exception e) {
+      System.out.println("Oops.");
+      System.out.println(e.getMessage());
+      e.printStackTrace();
+    }
+	}
+
+}
+
+PARSER_END(Compiler)
+
+SKIP :
+{
+  " "
+| "\t"
+| "\n"
+| "\r"
+}
+
+TOKEN :
+{
+	< PRINT : "print">
+}
+
+TOKEN :
+{
+  < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >
+}
+
+TOKEN :
+{
+	< NUMBER : (["-"])?<DIGITS> | (["-"])?<DIGITS> "." <DIGITS> >
+}
+
+TOKEN :
+{
+	< #DIGITS : ( ["0"-"9"] )+ >
+}
+
+TOKEN :
+{
+	< EQUAL : "=" >
+   |< PLUS : "+" >
+   |< MINUS: "-" >
+   |< TIMES: "*" >
+   |< DIV: "/" >
+}
+
+TOKEN :
+{
+	< OPEN_PAR : "(">
+	|< CLS_PAR : ")">
+}
+
+
+/** Top level production. */
+SimpleNode line() :
+{
+
+}
+{
+	 assign() ";" line2() {return jjtThis;}
+}
+
+SimpleNode line2() :
+{
+
+}
+{
+	<EOF> { return jjtThis; }
+   |assign() ";" line2() { return jjtThis; }
+   |<PRINT> (<Id>)+ ";" line2() { return jjtThis; }
+}
+
+void assign() :
+{
+
+}
+{
+	idValue() <EQUAL> expr()
+	{
+	}
+}
+
+void idValue() :
+{
+
+}
+{
+	(<Id> )+
+}
+
+void expr() :
+{
+
+}
+{
+	term() ( <PLUS> term() 
+					 | <MINUS>term() )* 
+}
+
+void term() :
+{
+
+}
+{
+	factor() ( <TIMES> factor() 
+					   | <DIV> factor()  )* 
+}
+
+void factor() :
+{
+
+}
+{
+	 <NUMBER> 
+	|(<Id>)+
+	|<OPEN_PAR> expr() <CLS_PAR>
+}
