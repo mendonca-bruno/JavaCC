@@ -1,0 +1,87 @@
+PARSER_BEGIN(Parser)
+
+import java.util.*;
+
+public class Parser{
+	public static Map<String, Double> symbolTable = new HashMap<String,Double>();
+	
+	public static void main(String[] args){
+		Parser parser = new Parser(System.in);
+		try{
+			parser.start();
+		}catch(Exception e){System.out.println(e);}
+	}
+}
+
+PARSER_END(Parser)
+
+SKIP :
+{
+	"\n"
+	|"\t"
+	|" "
+	|"\r"
+}
+
+TOKEN :
+{
+	< #DIGIT : ["0"-"9"]>
+}
+
+TOKEN :
+{
+	< NUMBER : (<DIGIT>)+ | (<DIGIT>)+ "." (<DIGIT>)+>
+}
+
+TOKEN :
+{
+	< PLUS : "+">
+	|< MINUS : "-">
+	|< ATR : "=">
+}
+
+TOKEN :
+{
+	< ID : ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )*>
+}
+
+void start() :
+{
+	String identif;
+	Double exprValue;
+}
+{
+	(identif = idValue() <ATR> exprValue = expr() 
+	{
+		symbolTable.put(identif,exprValue);
+		System.out.println(symbolTable.get(identif));
+	} ";")* <EOF>
+}
+String idValue() :
+{
+	Token t;
+}
+{
+	t = <ID> {return t.toString();}
+}
+Double expr() :
+{
+	Double i;
+	Double value;
+}
+{
+	value = factor()
+	(
+		<PLUS> i = factor() {value+=i;}
+		|<MINUS> i = factor() {value-=i;}
+	)*
+	{return value;}
+}
+
+Double factor() :
+{
+	Token t;
+}
+{
+	t = <NUMBER> {return Double.parseDouble(t.image);}
+}
