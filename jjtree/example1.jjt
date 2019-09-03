@@ -1,0 +1,65 @@
+PARSER_BEGIN(Parser)
+import java.util.*;
+
+public class Parser{
+	public static void main(String args[]){
+	Parser parser = new Parser(System.in);
+	try{
+		SimpleNode n = parser.start();
+		n.dump("");
+	}catch (Exception e) {}
+	}
+}
+
+PARSER_END(Parser)
+
+SKIP :
+{
+	" "
+	|"\n"
+	|"\r"
+	|"\t"
+}
+
+TOKEN :
+{
+	<# DIGIT : ["0"-"9"]>
+}
+
+TOKEN :
+{
+	<NUMBER : (["-"])?(<DIGIT>)+ | (["-"])?(<DIGIT>)+"."(<DIGIT>)+>
+}
+
+TOKEN :
+{
+	<ID : ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )*>
+}
+
+TOKEN :
+{
+	<PLUS : "+">
+	|<MINUS: "-">
+	|<ATR: "=">
+}
+
+SimpleNode start() :
+{}
+{
+	(idValue() <ATR> expr() ";")* {return jjtThis;} <EOF>
+}
+void idValue() :
+{}
+{
+	(<ID>)+
+}
+void expr() :
+{}
+{
+	factor()(<PLUS> factor()|<MINUS> factor())*
+}
+void factor() :
+{}
+{
+	<NUMBER>
+}
