@@ -1,0 +1,21 @@
+TOKEN :
+{
+	< #DIGIT : ["0"-"9"]>
+}
+
+TOKEN :
+{
+	< NUMBER : (<DIGIT>)+ | (<DIGIT>)+ "." (<DIGIT>)+>
+}
+
+TOKEN :
+{
+	< PLUS : "+">
+	|< MINUS : "-">
+	|< ATR : "=">
+}
+
+TOKEN :
+{
+	< ID : ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )*>
+}

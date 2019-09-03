@@ -1,0 +1,7 @@
+PARSER_BEGIN(CLASSNAME)
+import java.util.*;
+public static void main(String[] args){
+public static Map<>...= new HashMap<>();
+Class obj = new Class(System.in)
+}
+PARSER_END(CLASSNAME)

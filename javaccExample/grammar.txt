@@ -1,0 +1,5 @@
+start -> (idValue expr ;)*
+idValue -> ID
+expr -> factor (+ factor
+		|- factor)*
+factor -> number
